@@ -10,9 +10,8 @@
 #define booru_h
 
 #include <ncurses.h>
-#include <curl/curl.h>
 
-void booru_init(WINDOW* win, int w, int h);
+void booru_init(WINDOW* win, int h, int w);
 void* booru_refresh(void* arg);
 /* Note: this function will not free the window! */
 void booru_destroy(void);

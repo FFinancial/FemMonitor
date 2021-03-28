@@ -6,13 +6,15 @@
 //  Copyright © 2021 FemboyFinancial. All rights reserved.
 //
 
-#include <ncurses.h>
+#include <ctype.h>
 #include <curl/curl.h>
 #include <libxml/parser.h>
+#include <ncurses.h>
 #include <pthread.h>
 #include <time.h>
 
 #include "booru.h"
+#include "common.h"
 #include "company.h"
 #include "howfeed.h"
 #include "wiki.h"
@@ -37,7 +39,7 @@ void destroy_win(WINDOW* local_win)
      * result of erasing the window. It will leave its four corners,
      * an ugly remnant of the window.
      */
-    wborder(local_win, ' ', ' ', ' ',' ',' ',' ',' ',' ');
+    wborder(local_win, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
     wrefresh(local_win);
     delwin(local_win);
 }
@@ -56,33 +58,36 @@ int main(int argc, const char* argv[])
     refresh();
     
     start_color();
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
-    init_pair(2, COLOR_RED, COLOR_BLACK);
-    init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(COLORS_SUCCESS, COLOR_GREEN, COLOR_BLACK);
+    init_pair(COLORS_FAILURE, COLOR_RED, COLOR_BLACK);
+    init_pair(COLORS_WARNING, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(COLORS_GRAPH, COLOR_CYAN, COLOR_BLACK);
     
     // setup various status windows
+    // the bottom windows will be one row shorter to fit the status line at the end
     WINDOW* topleft = create_newwin(LINES/2, COLS/2, 0, 0);
     WINDOW* topright = create_newwin(LINES/2, COLS/2, 0, COLS/2);
     WINDOW* botleft = create_newwin(LINES/2 - 1, COLS/2, LINES/2, 0);
     WINDOW* botright = create_newwin(LINES/2 - 1, COLS/2, LINES/2, COLS/2);
     
+    company_init(topleft, LINES/2, COLS/2);
+    howfeed_init(topright, LINES/2, COLS/2);
     booru_init(botleft, LINES/2 - 1, COLS/2);
-    mvwprintw(topleft, 0, 1, " Company ");
-    mvwprintw(topright, 0, 1, " Howfeed.biz ");
     mvwprintw(botright, 0, 1, " FemWiki ");
-    
-    wrefresh(topleft);
-    wrefresh(topright);
     wrefresh(botright);
 
     // start refresh status threads
     pthread_t booru_th;
     pthread_create(&booru_th, NULL, booru_refresh, NULL);
+    pthread_t howfeed_th;
+    pthread_create(&howfeed_th, NULL, howfeed_refresh, NULL);
+    pthread_t company_th;
+    pthread_create(&company_th, NULL, company_refresh, NULL);
     
     time_t t;
     struct tm tm;
     char ch;
-    while ((ch = getch()) != KEY_QUIT)
+    while ((ch = tolower(getch())) != KEY_QUIT)
     {
         time(&t);
         tm = *localtime(&t);
@@ -93,11 +98,19 @@ int main(int argc, const char* argv[])
                  tm.tm_hour,
                  tm.tm_min,
                  tm.tm_sec);
+        mvprintw(LINES - 1, COLS - 15, "Press Q to quit");
         wrefresh(stdscr);
     }
     
     // cleanup everything
+    pthread_cancel(booru_th);
     booru_destroy();
+    
+    pthread_cancel(howfeed_th);
+    howfeed_destroy();
+    
+    pthread_cancel(company_th);
+    company_destroy();
     
     destroy_win(topleft);
     destroy_win(topright);

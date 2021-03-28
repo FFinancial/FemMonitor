@@ -9,7 +9,11 @@
 #ifndef howfeed_h
 #define howfeed_h
 
-#include <curl/curl.h>
+#include <ncurses.h>
 
+void howfeed_init(WINDOW* win, int h, int w);
+void* howfeed_refresh(void* arg);
+/* Note: this function will not free the window! */
+void howfeed_destroy(void);
 
 #endif /* howfeed_h */
