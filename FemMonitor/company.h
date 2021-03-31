@@ -9,7 +9,11 @@
 #ifndef company_h
 #define company_h
 
-#include <curl/curl.h>
+#include <ncurses.h>
 
+void company_init(WINDOW* win, int h, int w);
+void* company_refresh(void* arg);
+/* Note: this function will not free the window! */
+void company_destroy(void);
 
 #endif /* company_h */

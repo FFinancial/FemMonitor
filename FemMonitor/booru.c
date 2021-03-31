@@ -66,17 +66,11 @@ void* booru_refresh(void* arg)
         gettimeofday(&start, NULL);
         
         CURLcode res;
+        CURLcode res2;
         struct MemoryStruct posts_data = geturl(curl, "http://fembooru.jp/api/danbooru/find_posts", &res);
+        struct MemoryStruct tags_data = geturl(curl, "http://fembooru.jp/api/danbooru/find_tags", &res2);
         
-        if (res != CURLE_OK)
-        {
-            on_curl_error(window, res);
-            goto cleanup;
-        }
-        
-        struct MemoryStruct tags_data = geturl(curl, "http://fembooru.jp/api/danbooru/find_tags", &res);
-        
-        if (res != CURLE_OK)
+        if (res != CURLE_OK || res2 != CURLE_OK)
         {
             on_curl_error(window, res);
             goto cleanup;
@@ -137,9 +131,10 @@ void* booru_refresh(void* arg)
         wattroff(window, COLOR_PAIR(COLORS_SUCCESS));
         mvwprintw(window, START_ROW, START_COL, "%s posts", attr->children->content);
         
-        // get first 3 tags
         xmlFreeDoc(doc);
-        doc = xmlReadMemory(tags_data.memory, tags_data.size, "noname.xml", NULL, 0);
+        
+        // get first 3 tags
+        doc = xmlReadMemory(tags_data.memory, tags_data.size, "noname.xml", NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
         if (doc == NULL)
         {
             on_xml_error(window);

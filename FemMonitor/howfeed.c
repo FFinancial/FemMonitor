@@ -95,7 +95,7 @@ void* howfeed_refresh(void* arg)
         gdrawbar(graph, index, response_times[index] / 100.0f);
         
         // get article count
-        doc = xmlReadMemory(article_data.memory, article_data.size, "noname.xml", NULL, 0);
+        doc = xmlReadMemory(article_data.memory, article_data.size, "noname.xml", NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
         if (doc == NULL)
         {
             on_xml_error(window);
