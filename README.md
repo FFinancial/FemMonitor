@@ -12,6 +12,8 @@ Best viewed on a wall-mounted 4:3 monitor with a VGA font.
 
 - libxml2.2
 
-## Makefile
+## Building
 
-no im developing on xcode rn lol
+If you're on Windows you're fucked.
+
+Use the Makefile to build, you know the drill.

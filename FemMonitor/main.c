@@ -65,16 +65,13 @@ int main(int argc, const char* argv[])
     
     // setup various status windows
     // the bottom windows will be one row shorter to fit the status line at the end
-    WINDOW* topleft = create_newwin(LINES/2, COLS/2, 0, 0);
-    WINDOW* topright = create_newwin(LINES/2, COLS/2, 0, COLS/2);
+    WINDOW* topleft = create_newwin(LINES/2, COLS, 0, 0);
     WINDOW* botleft = create_newwin(LINES/2 - 1, COLS/2, LINES/2, 0);
     WINDOW* botright = create_newwin(LINES/2 - 1, COLS/2, LINES/2, COLS/2);
     
-    company_init(topleft, LINES/2, COLS/2);
-    howfeed_init(topright, LINES/2, COLS/2);
-    booru_init(botleft, LINES/2 - 1, COLS/2);
-    mvwprintw(botright, 0, 1, " FemWiki ");
-    wrefresh(botright);
+    company_init(topleft, LINES/2, COLS);
+    howfeed_init(botleft, LINES/2 - 1, COLS/2);
+    booru_init(botright, LINES/2 - 1, COLS/2);
 
     // start refresh status threads
     pthread_t booru_th;
@@ -113,7 +110,6 @@ int main(int argc, const char* argv[])
     company_destroy();
     
     destroy_win(topleft);
-    destroy_win(topright);
     destroy_win(botleft);
     destroy_win(botright);
     

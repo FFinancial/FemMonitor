@@ -104,9 +104,9 @@ void* company_refresh(void* arg)
             char* tagline = div->children->content;
             // clear line
             for (int i = START_COL; i < width - 1; ++i)
-                mvwprintw(window, START_ROW, i, " ");
+                mvwprintw(window, START_ROW+5, i, " ");
             // print the funny reference
-            mvwprintw(window, START_ROW, START_COL, "Random reference: %s", tagline);
+            mvwprintw(window, START_ROW+5, START_COL, "%s", tagline);
         }
         
         
