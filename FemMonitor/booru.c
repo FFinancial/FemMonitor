@@ -98,7 +98,7 @@ void* booru_refresh(void* arg)
         gdrawbar(graph, index, response_times[index] / 100.0f);
         
         // get post count
-        doc = xmlReadMemory(posts_data.memory, posts_data.size, "noname.xml", NULL, 0);
+        doc = xmlReadMemory(posts_data.memory, posts_data.size, "noname.xml", NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
         if (doc == NULL)
         {
             on_xml_error(window);
