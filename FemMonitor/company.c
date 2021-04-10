@@ -10,6 +10,7 @@
 #include <libxml/HTMLparser.h>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -107,6 +108,10 @@ void* company_refresh(void* arg)
                 mvwprintw(window, START_ROW+5, i, " ");
             // print the funny reference
             mvwprintw(window, START_ROW+5, START_COL, "%s", tagline);
+            // say the funny reference
+            char buf[1024];
+            sprintf(buf, "espeak \"%s\" >/dev/null 2>&1", tagline);
+            system(buf);
         }
         
         

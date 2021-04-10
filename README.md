@@ -12,6 +12,8 @@ Best viewed on a wall-mounted 4:3 monitor with a VGA font.
 
 - libxml2.2
 
+- espeak (not as a library, just the program)
+
 ## Building
 
 If you're on Windows you're fucked.
