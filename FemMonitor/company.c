@@ -64,10 +64,10 @@ void* company_refresh(void* arg)
     {
         CURLcode res;
         // check if femfinancial is up
-        struct MemoryStruct ff_data = geturl(curl, "http://ff.howfeed.biz", &res);
+        struct MemoryStruct ff_data = geturl(curl, "http://howfeed.biz", &res);
         
         // get random reference from booru
-        struct MemoryStruct booru_data = geturl(curl, "http://fembooru.jp", NULL);
+        struct MemoryStruct booru_data = geturl(curl, "http://fembooru.jp/post/list", NULL);
         
         // get most recent meeting time
         struct MemoryStruct meet_data = geturl(curl, "http://howfeed.biz/api/meet?token=1445", NULL);
